@@ -37,6 +37,12 @@ public class Permissions {
     public String[] getAliasesToRequest(@NonNull List<PermissionType> permissions) {
         Set<String> aliases = new LinkedHashSet<>();
         for (PermissionType permission : permissions) {
+            // FORK NOTE (html-kit-me): non-microphone paths below are retained
+            // from upstream for easy restoration, but must never request an
+            // alias that this microphone-only plugin no longer declares.
+            if (permission != PermissionType.MICROPHONE) {
+                continue;
+            }
             if (getPermissionState(permission) == PermissionState.GRANTED) {
                 continue;
             }
@@ -193,6 +199,11 @@ public class Permissions {
 
     @NonNull
     private PermissionState getPermissionState(@NonNull PermissionType permission) {
+        // See AGENTS.md: retaining upstream cases keeps future merges clear;
+        // this guard makes their public result accurately unavailable today.
+        if (permission != PermissionType.MICROPHONE) {
+            return PermissionState.UNAVAILABLE;
+        }
         switch (permission) {
             case BLUETOOTH:
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {

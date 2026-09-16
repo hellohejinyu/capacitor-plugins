@@ -21,6 +21,8 @@ import io.capawesome.capacitorjs.plugins.permissions.interfaces.Result;
 @CapacitorPlugin(
     name = "Permissions",
     permissions = {
+        /* FORK NOTE (html-kit-me): Leave upstream aliases here as comments so
+         * future permissions can be restored with a small, reviewable diff.
         @Permission(
             strings = { Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN },
             alias = PermissionsPlugin.ALIAS_BLUETOOTH
@@ -37,12 +39,15 @@ import io.capawesome.capacitorjs.plugins.permissions.interfaces.Result;
         @Permission(strings = { Manifest.permission.ACCESS_BACKGROUND_LOCATION }, alias = PermissionsPlugin.ALIAS_LOCATION_BACKGROUND),
         @Permission(strings = { Manifest.permission.ACCESS_COARSE_LOCATION }, alias = PermissionsPlugin.ALIAS_LOCATION_COARSE),
         @Permission(strings = { Manifest.permission.ACCESS_FINE_LOCATION }, alias = PermissionsPlugin.ALIAS_LOCATION_FINE),
-        @Permission(strings = { Manifest.permission.RECORD_AUDIO }, alias = PermissionsPlugin.ALIAS_MICROPHONE),
+        */
+        @Permission(strings = { Manifest.permission.RECORD_AUDIO }, alias = PermissionsPlugin.ALIAS_MICROPHONE)
+        /*
         @Permission(strings = { Manifest.permission.ACTIVITY_RECOGNITION }, alias = PermissionsPlugin.ALIAS_MOTION),
         @Permission(strings = { Manifest.permission.POST_NOTIFICATIONS }, alias = PermissionsPlugin.ALIAS_NOTIFICATIONS),
         @Permission(strings = { Manifest.permission.READ_MEDIA_IMAGES }, alias = PermissionsPlugin.ALIAS_PHOTOS),
         @Permission(strings = { Manifest.permission.READ_EXTERNAL_STORAGE }, alias = PermissionsPlugin.ALIAS_PHOTOS_LEGACY),
         @Permission(strings = { Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED }, alias = PermissionsPlugin.ALIAS_PHOTOS_USER_SELECTED)
+        */
     }
 )
 public class PermissionsPlugin extends Plugin {

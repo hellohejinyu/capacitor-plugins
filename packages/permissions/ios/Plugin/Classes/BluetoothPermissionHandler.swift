@@ -1,3 +1,6 @@
+#if false
+// FORK NOTE (html-kit-me): kept as inactive upstream source. Do not compile
+// CoreBluetooth until Bluetooth is intentionally restored.
 import CoreBluetooth
 import Foundation
 
@@ -19,3 +22,4 @@ class BluetoothPermissionHandler: NSObject, CBCentralManagerDelegate {
         centralManager = CBCentralManager(delegate: self, queue: nil, options: [CBCentralManagerOptionShowPowerAlertKey: false])
     }
 }
+#endif

@@ -1,3 +1,6 @@
+#if false
+// FORK NOTE (html-kit-me): kept as inactive upstream source. Do not compile
+// CoreLocation/UIKit until Location is intentionally restored.
 import CoreLocation
 import Foundation
 import UIKit
@@ -66,3 +69,4 @@ class LocationPermissionHandler: NSObject, CLLocationManagerDelegate {
         }
     }
 }
+#endif

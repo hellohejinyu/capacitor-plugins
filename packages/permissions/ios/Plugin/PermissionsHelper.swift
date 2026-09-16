@@ -1,3 +1,8 @@
+#if false
+// FORK NOTE (html-kit-me): original upstream helper retained for reviewable
+// upstream synchronization. Its imports deliberately remain inactive: merely
+// linking these frameworks can make App Store Connect require their purpose
+// strings even if the JavaScript app never requests the permission.
 import AVFoundation
 import Contacts
 import CoreBluetooth
@@ -155,6 +160,25 @@ public class PermissionsHelper {
                 return ["NSRemindersFullAccessUsageDescription"]
             }
             return ["NSRemindersUsageDescription"]
+        }
+    }
+}
+#endif
+
+import AVFoundation
+
+// FORK NOTE (html-kit-me): the active fork exposes only the helper needed by
+// microphone permission. Add another helper only when that permission is
+// intentionally restored in Permissions.swift.
+public class PermissionsHelper {
+    public static func getCaptureDevicePermissionState(for mediaType: AVMediaType) -> PermissionState {
+        switch AVCaptureDevice.authorizationStatus(for: mediaType) {
+        case .authorized:
+            return .granted
+        case .notDetermined:
+            return .prompt
+        default:
+            return .denied
         }
     }
 }

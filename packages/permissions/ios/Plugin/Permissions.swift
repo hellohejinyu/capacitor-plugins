@@ -1,3 +1,9 @@
+#if false
+// FORK NOTE (html-kit-me): original upstream multi-permission implementation.
+// Keep it disabled rather than deleting it so upstream synchronization remains
+// reviewable. Re-enable the smallest required sections only when adding a new
+// permission; every imported Apple framework can trigger an App Store purpose
+// string requirement even when its API is never called.
 import AVFoundation
 import Capacitor
 import Contacts
@@ -226,6 +232,73 @@ import UserNotifications
             eventStore.requestFullAccessToReminders(completion: handleResult)
         } else {
             eventStore.requestAccess(to: .reminder, completion: handleResult)
+        }
+    }
+}
+#endif
+
+// FORK NOTE (html-kit-me): this active implementation intentionally supports
+// only MICROPHONE. It links AVFoundation only, avoiding App Store Connect
+// requests for unrelated Location, Bluetooth, Calendar, Contacts and Motion
+// purpose strings.
+import AVFoundation
+import Capacitor
+import Foundation
+
+@objc public class Permissions: NSObject {
+    @objc public func check(_ options: CheckOptions, completion: @escaping (_ result: CheckResult?, _ error: Error?) -> Void) {
+        completion(CheckResult(statuses: getStatuses(options.permissions)), nil)
+    }
+
+    @objc public func request(_ options: RequestOptions, completion: @escaping (_ result: RequestResult?, _ error: Error?) -> Void) {
+        requestPermissions(options.permissions, statuses: []) { statuses, error in
+            if let error = error {
+                completion(nil, error)
+                return
+            }
+            completion(RequestResult(statuses: statuses), nil)
+        }
+    }
+
+    private func getStatuses(_ permissions: [Permission]) -> [PermissionStatus] {
+        permissions.map { permission in
+            PermissionStatus(permission: permission, state: getPermissionState(of: permission))
+        }
+    }
+
+    private func getPermissionState(of permission: Permission) -> PermissionState {
+        guard permission == .microphone else { return .unavailable }
+        return PermissionsHelper.getCaptureDevicePermissionState(for: .audio)
+    }
+
+    private func requestPermissions(
+        _ permissions: [Permission],
+        statuses: [PermissionStatus],
+        completion: @escaping ([PermissionStatus], Error?) -> Void
+    ) {
+        guard let permission = permissions.first else {
+            completion(statuses, nil)
+            return
+        }
+        guard permission == .microphone else {
+            requestPermissions(Array(permissions.dropFirst()), statuses: statuses + [PermissionStatus(permission: permission, state: .unavailable)], completion: completion)
+            return
+        }
+        let state = getPermissionState(of: permission)
+        guard state == .prompt else {
+            requestPermissions(Array(permissions.dropFirst()), statuses: statuses + [PermissionStatus(permission: permission, state: state)], completion: completion)
+            return
+        }
+        guard Bundle.main.object(forInfoDictionaryKey: "NSMicrophoneUsageDescription") != nil else {
+            completion(statuses, CustomError.usageDescriptionMissing(key: "NSMicrophoneUsageDescription"))
+            return
+        }
+        AVCaptureDevice.requestAccess(for: .audio) { _ in
+            self.requestPermissions(
+                Array(permissions.dropFirst()),
+                statuses: statuses + [PermissionStatus(permission: permission, state: self.getPermissionState(of: permission))],
+                completion: completion
+            )
         }
     }
 }
