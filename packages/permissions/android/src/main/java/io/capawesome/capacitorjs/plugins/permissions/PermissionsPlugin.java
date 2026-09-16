@@ -23,6 +23,7 @@ import io.capawesome.capacitorjs.plugins.permissions.interfaces.Result;
     permissions = {
         /* FORK NOTE (html-kit-me): Leave upstream aliases here as comments so
          * future permissions can be restored with a small, reviewable diff.
+         * CAMERA has been moved to active below -- see AGENTS.md.
         @Permission(
             strings = { Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN },
             alias = PermissionsPlugin.ALIAS_BLUETOOTH
@@ -31,7 +32,6 @@ import io.capawesome.capacitorjs.plugins.permissions.interfaces.Result;
             strings = { Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR },
             alias = PermissionsPlugin.ALIAS_CALENDAR
         ),
-        @Permission(strings = { Manifest.permission.CAMERA }, alias = PermissionsPlugin.ALIAS_CAMERA),
         @Permission(
             strings = { Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS },
             alias = PermissionsPlugin.ALIAS_CONTACTS
@@ -40,6 +40,7 @@ import io.capawesome.capacitorjs.plugins.permissions.interfaces.Result;
         @Permission(strings = { Manifest.permission.ACCESS_COARSE_LOCATION }, alias = PermissionsPlugin.ALIAS_LOCATION_COARSE),
         @Permission(strings = { Manifest.permission.ACCESS_FINE_LOCATION }, alias = PermissionsPlugin.ALIAS_LOCATION_FINE),
         */
+        @Permission(strings = { Manifest.permission.CAMERA }, alias = PermissionsPlugin.ALIAS_CAMERA),
         @Permission(strings = { Manifest.permission.RECORD_AUDIO }, alias = PermissionsPlugin.ALIAS_MICROPHONE)
         /*
         @Permission(strings = { Manifest.permission.ACTIVITY_RECOGNITION }, alias = PermissionsPlugin.ALIAS_MOTION),

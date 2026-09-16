@@ -1,1 +1,12 @@
+# macOS 升级后 GUI 应用启动的 git 不会加载 ~/.zshrc，需要手动把 nvm 和 pnpm 加入 PATH
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+export PNPM_HOME="$HOME/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME/bin:"*) ;;
+  *) export PATH="$PNPM_HOME/bin:$PATH" ;;
+esac
+
+
 npx --no-install lint-staged

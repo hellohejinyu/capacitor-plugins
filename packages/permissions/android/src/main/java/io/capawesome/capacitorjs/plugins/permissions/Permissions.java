@@ -37,10 +37,11 @@ public class Permissions {
     public String[] getAliasesToRequest(@NonNull List<PermissionType> permissions) {
         Set<String> aliases = new LinkedHashSet<>();
         for (PermissionType permission : permissions) {
-            // FORK NOTE (html-kit-me): non-microphone paths below are retained
+            // FORK NOTE (html-kit-me): non-active paths below are retained
             // from upstream for easy restoration, but must never request an
-            // alias that this microphone-only plugin no longer declares.
-            if (permission != PermissionType.MICROPHONE) {
+            // alias that this fork does not declare. CAMERA and MICROPHONE are
+            // the two active permissions (see AGENTS.md).
+            if (permission != PermissionType.MICROPHONE && permission != PermissionType.CAMERA) {
                 continue;
             }
             if (getPermissionState(permission) == PermissionState.GRANTED) {
@@ -201,7 +202,8 @@ public class Permissions {
     private PermissionState getPermissionState(@NonNull PermissionType permission) {
         // See AGENTS.md: retaining upstream cases keeps future merges clear;
         // this guard makes their public result accurately unavailable today.
-        if (permission != PermissionType.MICROPHONE) {
+        // CAMERA and MICROPHONE are the two active permissions (see AGENTS.md).
+        if (permission != PermissionType.MICROPHONE && permission != PermissionType.CAMERA) {
             return PermissionState.UNAVAILABLE;
         }
         switch (permission) {

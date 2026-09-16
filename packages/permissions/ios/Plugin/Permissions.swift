@@ -238,9 +238,10 @@ import UserNotifications
 #endif
 
 // FORK NOTE (html-kit-me): this active implementation intentionally supports
-// only MICROPHONE. It links AVFoundation only, avoiding App Store Connect
-// requests for unrelated Location, Bluetooth, Calendar, Contacts and Motion
-// purpose strings.
+// only CAMERA and MICROPHONE. Both reuse AVFoundation, so no additional Apple
+// framework is linked and App Store Connect only requires the matching camera
+// and microphone purpose strings. Re-enabling another permission must add only
+// its framework import here plus the Info.plist key (see AGENTS.md).
 import AVFoundation
 import Capacitor
 import Foundation
@@ -266,9 +267,23 @@ import Foundation
         }
     }
 
+    // FORK NOTE: returns the AVMediaType and Info.plist purpose key for the two
+    // permissions backed by AVFoundation. nil marks a permission this fork
+    // intentionally leaves unavailable (see AGENTS.md).
+    private func avMediaTypeAndUsageKey(for permission: Permission) -> (AVMediaType, String)? {
+        switch permission {
+        case .camera:
+            return (.video, "NSCameraUsageDescription")
+        case .microphone:
+            return (.audio, "NSMicrophoneUsageDescription")
+        default:
+            return nil
+        }
+    }
+
     private func getPermissionState(of permission: Permission) -> PermissionState {
-        guard permission == .microphone else { return .unavailable }
-        return PermissionsHelper.getCaptureDevicePermissionState(for: .audio)
+        guard let (mediaType, _) = avMediaTypeAndUsageKey(for: permission) else { return .unavailable }
+        return PermissionsHelper.getCaptureDevicePermissionState(for: mediaType)
     }
 
     private func requestPermissions(
@@ -280,7 +295,7 @@ import Foundation
             completion(statuses, nil)
             return
         }
-        guard permission == .microphone else {
+        guard let (mediaType, usageKey) = avMediaTypeAndUsageKey(for: permission) else {
             requestPermissions(Array(permissions.dropFirst()), statuses: statuses + [PermissionStatus(permission: permission, state: .unavailable)], completion: completion)
             return
         }
@@ -289,11 +304,11 @@ import Foundation
             requestPermissions(Array(permissions.dropFirst()), statuses: statuses + [PermissionStatus(permission: permission, state: state)], completion: completion)
             return
         }
-        guard Bundle.main.object(forInfoDictionaryKey: "NSMicrophoneUsageDescription") != nil else {
-            completion(statuses, CustomError.usageDescriptionMissing(key: "NSMicrophoneUsageDescription"))
+        guard Bundle.main.object(forInfoDictionaryKey: usageKey) != nil else {
+            completion(statuses, CustomError.usageDescriptionMissing(key: usageKey))
             return
         }
-        AVCaptureDevice.requestAccess(for: .audio) { _ in
+        AVCaptureDevice.requestAccess(for: mediaType) { _ in
             self.requestPermissions(
                 Array(permissions.dropFirst()),
                 statuses: statuses + [PermissionStatus(permission: permission, state: self.getPermissionState(of: permission))],
