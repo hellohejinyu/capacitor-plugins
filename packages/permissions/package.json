@@ -1,5 +1,5 @@
 {
-  "name": "@capawesome/capacitor-permissions",
+  "name": "@minax/capacitor-permissions",
   "version": "0.1.2",
   "description": "Capacitor plugin to check and request device permissions with a unified API on Android, iOS, and Web.",
   "main": "dist/plugin.cjs.js",
