@@ -2,11 +2,14 @@
 import PackageDescription
 
 let package = Package(
-    name: "CapawesomeCapacitorPermissions",
+    // Keep this aligned with Capacitor's generated name for the npm package
+    // @minax/capacitor-permissions. Otherwise cap sync asks SPM for a product
+    // that this package does not export.
+    name: "MinaxCapacitorPermissions",
     platforms: [.iOS(.v15)],
     products: [
         .library(
-            name: "CapawesomeCapacitorPermissions",
+            name: "MinaxCapacitorPermissions",
             targets: ["PermissionsPlugin"])
     ],
     dependencies: [
